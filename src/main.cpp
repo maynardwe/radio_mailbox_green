@@ -28,7 +28,6 @@
 #define RED 6
 #define WHITE 5
 
-int duration = 1000; // how long the tone lasts
 bool gotMail = false;
 bool sendTX = false;
 bool red = false;
@@ -89,12 +88,6 @@ void Test()
       Serial.print(rf69.lastRssi(), DEC);
       Serial.print(" ");
       Serial.println(freq);
-      /* if (strstr((char *)buf, "Red")) {
-        tone(speakerPin, freq, duration); // play the tone
-      } else {
-        tone(speakerPin, freq, 2000); // play the tone
-      }
-*/
     }
     else
     {
@@ -120,7 +113,7 @@ void setup()
   pinMode(testJumper, INPUT);
   pinMode(RFM69_RST, OUTPUT);
   digitalWrite(RFM69_RST, LOW);
-  Serial.println("mail_house_green");
+  Serial.println("radio_mailbox_green");
   Serial.println("Feather RFM69 TX Test!");
   Serial.println();
 
@@ -204,7 +197,7 @@ void loop()
 
       if ((!gotMail) and (strstr((char *)buf, "Red")))
       {
-        digitalWrite(RED, HIGH);
+        digitalWrite(WHITE, HIGH);//tell Yun you got mail
         gotMail = true;
         char radiopacket[20] = "Green got mail #";
       }
@@ -213,10 +206,8 @@ void loop()
       Serial.println(gotMail);
       if ((gotMail) and (strstr((char *)buf, "RED")))
       {
-        digitalWrite(WHITE, HIGH); //tell Yun you got mail
         delay(5000);
         digitalWrite(WHITE, LOW);
-        digitalWrite(RED, LOW);
         char radiopacket[20] = "Green ACK      #";
         itoa(packetnum++, radiopacket + 16, 10);
         Serial.print("TX ");
