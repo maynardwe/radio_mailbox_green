@@ -20,39 +20,36 @@
 #define RF69_FREQ 915.0
 
 //#if defined (__AVR_ATmega32U4__) // Feather 32u4 w/Radio
-#define RFM69_CS      8
-#define RFM69_INT     7
-#define RFM69_RST     4
-#define LED           13
-#define testJumper   12
-#define RED           6
-//#define YELLOW        5
-//#define speakerPin    10
-//#endif
+#define RFM69_CS 8
+#define RFM69_INT 7
+#define RFM69_RST 4
+#define LED 13
+#define testJumper 12
+#define RED 6
+#define WHITE 5
 
-
-
-int duration = 1000;   // how long the tone lasts
+int duration = 1000; // how long the tone lasts
 bool gotMail = false;
 bool sendTX = false;
 bool red = false;
 char radiopacket[20] = "Green got mail  #";
-//bool heedRXRed = true;
 
 // Singleton instance of the radio driver
 RH_RF69 rf69(RFM69_CS, RFM69_INT);
 
-int16_t packetnum = 0;  // packet counter, we increment per xmission
+int16_t packetnum = 0; // packet counter, we increment per xmission
 
 //-----------------------------------------------------------------------------------------------------
 //     BLINK     BLINK     BLINK     BLINK     BLINK     BLINK     BLINK     BLINK     BLINK     BLINK
 //-----------------------------------------------------------------------------------------------------
 
-void Blink(byte PIN, byte DELAY_MS, byte loops) {
-  for (byte i=0; i<loops; i++)  {
-    digitalWrite(PIN,HIGH);
+void Blink(byte PIN, byte DELAY_MS, byte loops)
+{
+  for (byte i = 0; i < loops; i++)
+  {
+    digitalWrite(PIN, HIGH);
     delay(DELAY_MS);
-    digitalWrite(PIN,LOW);
+    digitalWrite(PIN, LOW);
     delay(DELAY_MS);
   }
 }
@@ -61,14 +58,16 @@ void Blink(byte PIN, byte DELAY_MS, byte loops) {
 //-----------------------------------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------------------------------
-//     TEST     TEST     TEST     TEST     TEST     TEST     TEST     TEST     TEST     TEST       
+//     TEST     TEST     TEST     TEST     TEST     TEST     TEST     TEST     TEST     TEST
 //-----------------------------------------------------------------------------------------------------
-void Test() {
-  delay(1000);  // Wait 1 second between transmits, could also 'sleep' here!
+void Test()
+{
+  delay(1000); // Wait 1 second between transmits, could also 'sleep' here!
 
   char radiopacket[20] = "Green World #";
   itoa(packetnum++, radiopacket + 13, 10);
-  Serial.print("Sending "); Serial.println(radiopacket);
+  Serial.print("Sending ");
+  Serial.println(radiopacket);
 
   // Send a message!
   rf69.send((uint8_t *)radiopacket, strlen(radiopacket));
@@ -78,31 +77,37 @@ void Test() {
   uint8_t buf[RH_RF69_MAX_MESSAGE_LEN];
   uint8_t len = sizeof(buf);
 
-  if (rf69.waitAvailableTimeout(500))  {
+  if (rf69.waitAvailableTimeout(500))
+  {
     // Should be a reply message for us now
-    if (rf69.recv(buf, &len)) {
+    if (rf69.recv(buf, &len))
+    {
       int freq = map(freq, 0, (rf69.lastRssi(), DEC), 440, 2440);
-      Serial.print("RX "); Serial.print((char*)buf); Serial.print("RSSI: ");
+      Serial.print("RX ");
+      Serial.print((char *)buf);
+      Serial.print("RSSI: ");
       Serial.print(rf69.lastRssi(), DEC);
       Serial.print(" ");
       Serial.println(freq);
-     /* if (strstr((char *)buf, "Red")) {
+      /* if (strstr((char *)buf, "Red")) {
         tone(speakerPin, freq, duration); // play the tone
       } else {
         tone(speakerPin, freq, 2000); // play the tone
       }
 */
-    } else {
+    }
+    else
+    {
       Serial.println("No reply, is another RFM69 listening?");
     }
   }
 }
 //-----------------------------------------------------------------------------------------------------
-//     TEST     TEST     TEST     TEST     TEST     TEST     TEST     TEST     TEST     TEST       
+//     TEST     TEST     TEST     TEST     TEST     TEST     TEST     TEST     TEST     TEST
 //-----------------------------------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------------------------------
-//     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP  
+//     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP
 //-----------------------------------------------------------------------------------------------------
 void setup()
 {
@@ -111,13 +116,11 @@ void setup()
 
   pinMode(LED, OUTPUT);
   pinMode(RED, OUTPUT);
-  // pinMode(YELLOW, OUTPUT);
+  pinMode(WHITE, OUTPUT);
   pinMode(testJumper, INPUT);
-  // pinMode(speakerPin, OUTPUT);
   pinMode(RFM69_RST, OUTPUT);
   digitalWrite(RFM69_RST, LOW);
   Serial.println("mail_house_green");
-
   Serial.println("Feather RFM69 TX Test!");
   Serial.println();
 
@@ -127,47 +130,55 @@ void setup()
   digitalWrite(RFM69_RST, LOW);
   delay(10);
 
-  if (!rf69.init()) {
+  if (!rf69.init())
+  {
     Serial.println("RFM69 radio init failed");
-    while (1);
+    while (1)
+      ;
   }
   Serial.println("RFM69 radio init OK!");
   // Defaults after init are 434.0MHz, modulation GFSK_Rb250Fd250, +13dbM (for low power module)
   // No encryption
-  if (!rf69.setFrequency(RF69_FREQ)) {
+  if (!rf69.setFrequency(RF69_FREQ))
+  {
     Serial.println("setFrequency failed");
   }
 
   // If you are using a high power RF69 eg RFM69HW, you *must* set a Tx power with the
   // ishighpowermodule flag set like this:
-  rf69.setTxPower(20, true);  // range from 14-20 for power, 2nd arg must be true for 69HCW
+  rf69.setTxPower(20, true); // range from 14-20 for power, 2nd arg must be true for 69HCW
 
   // The encryption key has to be the same as the one in the server
-  uint8_t key[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
-                  };
+  uint8_t key[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                   0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
   rf69.setEncryptionKey(key);
 
-  Serial.print("RFM69 radio @");  Serial.print((int)RF69_FREQ);  Serial.println(" MHz");
+  Serial.print("RFM69 radio @");
+  Serial.print((int)RF69_FREQ);
+  Serial.println(" MHz");
 }
 //-----------------------------------------------------------------------------------------------------
-//     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP  
+//     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP     SETUP
 //-----------------------------------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------------------------------
-//     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP       
+//     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP
 //-----------------------------------------------------------------------------------------------------
-void loop() {
-  if (digitalRead(testJumper) == HIGH) {
+void loop()
+{
+  if (digitalRead(testJumper) == HIGH)
+  {
     Test();
     return;
   }
 
-  delay(1000);  // Wait 1 second between transmits, could also 'sleep' here!
+  delay(1000); // Wait 1 second between transmits, could also 'sleep' here!
   //-------------------------------------------------TX---------------------------------------
-  if (gotMail) {
+  if (gotMail)
+  {
     itoa(packetnum++, radiopacket + 16, 10);
-    Serial.print("TX "); Serial.println(radiopacket); 
+    Serial.print("TX ");
+    Serial.println(radiopacket);
     //Serial.println("  gotMail"); Serial.println(gotMail);
     rf69.send((uint8_t *)radiopacket, strlen(radiopacket)); // Send a message!
     rf69.waitPacketSent();
@@ -177,42 +188,56 @@ void loop() {
   uint8_t len = sizeof(buf);
   //-------------------------------------------------TX/RX-----------------------------------------
 
-  if (rf69.waitAvailableTimeout(500))  { // Should be a reply message for us now*
-    if (rf69.recv(buf, &len)) {
-      if (!len) return;
+  if (rf69.waitAvailableTimeout(500))
+  { // Should be a reply message for us now*
+    if (rf69.recv(buf, &len))
+    {
+      if (!len)
+        return;
       buf[len] = 0;
-      Serial.print("RX ["); Serial.print(len); Serial.print("]: ");
-      Serial.print((char*)buf); Serial.print(" - RSSI: ");
+      Serial.print("RX [");
+      Serial.print(len);
+      Serial.print("]: ");
+      Serial.print((char *)buf);
+      Serial.print(" - RSSI: ");
       Serial.println(rf69.lastRssi(), DEC);
 
-      if ((!gotMail) and (strstr((char *)buf, "Red"))) {
+      if ((!gotMail) and (strstr((char *)buf, "Red")))
+      {
         digitalWrite(RED, HIGH);
         gotMail = true;
         char radiopacket[20] = "Green got mail #";
       }
-     
-      
-      Serial.print("gotMail = ");  Serial.println(gotMail);
-      if ((gotMail) and (strstr((char*)buf, "RED"))) {
-       // digitalWrite(YELLOW, HIGH);
-       // delay(5000);
-       // digitalWrite(YELLOW, LOW);
+
+      Serial.print("gotMail = ");
+      Serial.println(gotMail);
+      if ((gotMail) and (strstr((char *)buf, "RED")))
+      {
+        digitalWrite(WHITE, HIGH); //tell Yun you got mail
+        delay(5000);
+        digitalWrite(WHITE, LOW);
         digitalWrite(RED, LOW);
         char radiopacket[20] = "Green ACK      #";
         itoa(packetnum++, radiopacket + 16, 10);
-        Serial.print("TX "); Serial.print(radiopacket); Serial.print("gotMail = "); Serial.println(gotMail);
+        Serial.print("TX ");
+        Serial.print(radiopacket);
+        Serial.print("gotMail = ");
+        Serial.println(gotMail);
         rf69.send((uint8_t *)radiopacket, strlen(radiopacket)); // Send a message!
         rf69.waitPacketSent();
         gotMail = false;
       }
-      
-    } else {
+    }
+    else
+    {
       Serial.println("Receive failed");
     }
-  } else {
+  }
+  else
+  {
     Serial.println("Awaiting RX");
   }
 }
 //-----------------------------------------------------------------------------------------------------
-//     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP       
+//     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP     LOOP
 //-----------------------------------------------------------------------------------------------------
