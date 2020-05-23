@@ -198,16 +198,18 @@ void loop()
       if ((!gotMail) and (strstr((char *)buf, "Red")))
       {
         digitalWrite(WHITE, HIGH);//tell Yun you got mail
+        digitalWrite(RED, HIGH);
         gotMail = true;
         char radiopacket[20] = "Green got mail #";
       }
 
       Serial.print("gotMail = ");
       Serial.println(gotMail);
-      if ((gotMail) and (strstr((char *)buf, "RED")))
+      if (gotMail)// and (strstr((char *)buf, "RED")))
       {
         delay(5000);
         digitalWrite(WHITE, LOW);
+        digitalWrite(RED, LOW);
         char radiopacket[20] = "Green ACK      #";
         itoa(packetnum++, radiopacket + 16, 10);
         Serial.print("TX ");
