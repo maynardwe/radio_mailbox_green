@@ -207,19 +207,18 @@ void loop()
       Serial.println(gotMail);
       if (gotMail)// and (strstr((char *)buf, "RED")))
       {
-        delay(5000);
-        digitalWrite(WHITE, LOW);
-        digitalWrite(RED, LOW);
+
         char radiopacket[20] = "Green ACK      #";
         itoa(packetnum++, radiopacket + 16, 10);
         Serial.print("TX ");
         Serial.print(radiopacket);
-        Serial.print("gotMail = ");
-        Serial.println(gotMail);
         rf69.send((uint8_t *)radiopacket, strlen(radiopacket)); // Send a message!
         rf69.waitPacketSent();
         gotMail = false;
-      }
+        delay(20000);
+        digitalWrite(WHITE, LOW);
+        digitalWrite(RED, LOW); 
+             }
     }
     else
     {
