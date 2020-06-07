@@ -32,6 +32,7 @@ bool gotMail = false;
 bool sendTX = false;
 bool red = false;
 char radiopacket[20] = "Green got mail  #";
+int count = 0;
 
 // Singleton instance of the radio driver
 RH_RF69 rf69(RFM69_CS, RFM69_INT);
@@ -197,14 +198,21 @@ void loop()
 
       if ((!gotMail) and (strstr((char *)buf, "Red")))
       {
-        digitalWrite(WHITE, HIGH);//tell Yun you got mail
+        digitalWrite(WHITE, HIGH); //tell Yun you got mail
         digitalWrite(RED, HIGH);
         gotMail = true;
         char radiopacket[20] = "Green got mail #";
-      }
 
-      Serial.print("gotMail = ");
-      Serial.println(gotMail);
+        while (count < 20)
+        {
+          Serial.print("gotMail = ");
+          Serial.println(gotMail);
+          count++;
+          delay(1000);
+        }
+        count = 0;
+      }
+      /*
       if (gotMail)// and (strstr((char *)buf, "RED")))
       {
 
@@ -219,6 +227,7 @@ void loop()
         digitalWrite(WHITE, LOW);
         digitalWrite(RED, LOW); 
              }
+             */
     }
     else
     {
