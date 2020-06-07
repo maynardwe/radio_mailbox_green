@@ -201,13 +201,17 @@ void loop()
         digitalWrite(WHITE, HIGH); //tell Yun you got mail
         digitalWrite(RED, HIGH);
         gotMail = true;
-        char radiopacket[20] = "Green got mail #";
+        //char radiopacket[20] = "Green got mail #";
         Serial.println("gotMail - wait 20 seconds");
         delay(20000);
-      }
-      digitalWrite(WHITE, LOW); //tell Yun you got mail
+     
+      digitalWrite(WHITE, LOW); 
       digitalWrite(RED, LOW);
-      gotMail = false;
+      } 
+      else
+      {
+        gotMail = false;
+      }
       /*
       if (gotMail)// and (strstr((char *)buf, "RED")))
       {
