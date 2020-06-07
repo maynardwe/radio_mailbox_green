@@ -168,7 +168,7 @@ void loop()
 
   delay(1000); // Wait 1 second between transmits, could also 'sleep' here!
   //-------------------------------------------------TX---------------------------------------
-  if (gotMail)
+  /*if (gotMail)
   {
     itoa(packetnum++, radiopacket + 16, 10);
     Serial.print("TX ");
@@ -177,7 +177,7 @@ void loop()
     rf69.send((uint8_t *)radiopacket, strlen(radiopacket)); // Send a message!
     rf69.waitPacketSent();
   }
-
+*/
   uint8_t buf[RH_RF69_MAX_MESSAGE_LEN]; // Now wait for a reply
   uint8_t len = sizeof(buf);
   //-------------------------------------------------TX/RX-----------------------------------------
@@ -202,16 +202,12 @@ void loop()
         digitalWrite(RED, HIGH);
         gotMail = true;
         char radiopacket[20] = "Green got mail #";
-
-        while (count < 20)
-        {
-          Serial.print("gotMail = ");
-          Serial.println(gotMail);
-          count++;
-          delay(1000);
-        }
-        count = 0;
+        Serial.println("gotMail - wait 20 seconds");
+        delay(20000);
       }
+      digitalWrite(WHITE, LOW); //tell Yun you got mail
+      digitalWrite(RED, LOW);
+      gotMail = false;
       /*
       if (gotMail)// and (strstr((char *)buf, "RED")))
       {
