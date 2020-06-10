@@ -27,6 +27,7 @@
 #define testJumper 12
 #define RED 6
 #define WHITE 5
+#define YUN 9
 
 bool gotMail = false;
 bool sendTX = false;
@@ -200,14 +201,16 @@ void loop()
       {
         digitalWrite(WHITE, HIGH); //tell Yun you got mail
         digitalWrite(RED, HIGH);
+        digitalWrite(LED, HIGH);
         gotMail = true;
         //char radiopacket[20] = "Green got mail #";
         Serial.println("gotMail - wait 20 seconds");
         delay(20000);
-     
-      digitalWrite(WHITE, LOW); 
-      digitalWrite(RED, LOW);
-      } 
+
+        digitalWrite(WHITE, LOW);
+        digitalWrite(RED, LOW);
+        digitalWrite(LED, LOW);
+      }
       else
       {
         gotMail = false;
