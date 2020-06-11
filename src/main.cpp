@@ -110,6 +110,7 @@ void setup()
   //while (!Serial) { delay(1); } // wait until serial console is open, remove if not tethered to computer
 
   pinMode(LED, OUTPUT);
+  pinMode(YUN, OUTPUT);
   pinMode(RED, OUTPUT);
   pinMode(WHITE, OUTPUT);
   pinMode(testJumper, INPUT);
@@ -201,7 +202,7 @@ void loop()
       {
         digitalWrite(WHITE, HIGH); //tell Yun you got mail
         digitalWrite(RED, HIGH);
-        digitalWrite(LED, HIGH);
+        digitalWrite(YUN, HIGH);
         gotMail = true;
         //char radiopacket[20] = "Green got mail #";
         Serial.println("gotMail - wait 20 seconds");
@@ -209,7 +210,7 @@ void loop()
 
         digitalWrite(WHITE, LOW);
         digitalWrite(RED, LOW);
-        digitalWrite(LED, LOW);
+        digitalWrite(YUN, LOW);
       }
       else
       {
